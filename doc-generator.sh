@@ -28,9 +28,11 @@ format_size() {
     local size=$1
     local units=("B" "KB" "MB" "GB")
     local unit=0
-    while [ "$size" -gt 1024 ] && [ "$unit" -lt 4 ]; do
+    
+    # Use awk for floating point comparison
+    while (( $(echo "$size > 1024" | bc -l) )) && ((unit < 3)); do
         size=$(echo "scale=2; $size/1024" | bc)
-        unit=$((unit + 1))
+        ((unit++))
     done
     
     echo "$size ${units[$unit]}"
