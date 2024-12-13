@@ -1,0 +1,37 @@
+name: Test Script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Make script executable
+      run: chmod +x ./doc-generator.sh
+      
+    - name: Test script help
+      run: ./doc-generator.sh --help
+
+    - name: Test script execution
+      run: |
+        # Test with current directory
+        ./doc-generator.sh
+        
+        # Test with specific file type
+        ./doc-generator.sh '.*\.sh$'
+        
+        # Verify output file exists
+        test -f documentation.md
+
+    - name: Upload documentation artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: documentation.md
